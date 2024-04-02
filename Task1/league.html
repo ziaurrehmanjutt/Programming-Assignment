@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League Data</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>League Data</h2>
+
+    <table id="leagueTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Home Team</th>
+                <th>Home Score</th>
+                <th>Away Team</th>
+                <th>Away Score</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody id="leagueData">
+            <!-- League data will be inserted here -->
+        </tbody>
+    </table>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/ajv/dist/ajv.min.js"></script> -->
+    <script>
+        // Read the JSON data from League.json file
+
+
+        document.addEventListener('DOMContentLoaded', async function () {
+
+            console.log('Document is ready!');
+
+
+
+            loadData();
+
+
+        });
+
+        async function loadData() {
+
+            let data = await fetch('league.json');
+            let schema = await fetch('leagueschema.json');
+
+            const valid = validateObject(data, schema);
+
+            if (!valid) {
+                console.error('Data does not match schema.');
+                return;
+            }
+
+            // If data is valid, populate the HTML table
+            const leagueData = data.FebruaryFixtures.concat(data.MarchFixtures); // Add more months if available
+            populateTable(leagueData);
+
+        }
+
+        function validateObject(obj, sch) {
+            // Check if object is null or undefined
+            if (obj === null || obj === undefined) {
+                return false;
+            }
+
+            // Check if object is an array
+            if (sch.type === 'array' && Array.isArray(obj)) {
+                // Validate each item in the array recursively
+                for (const item of obj) {
+                    if (!validateObject(item, sch.items)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            // Check if object is a primitive type
+            if (typeof obj === sch.type) {
+                // If object is of type 'object', validate its properties recursively
+                if (sch.type === 'object') {
+                    for (const key in sch.properties) {
+                        const propertySchema = sch.properties[key];
+                        const propertyValue = obj[key];
+
+                        console.log("Key", key)
+                        console.log("PropScema", propertySchema)
+                        console.log("val", propertyValue)
+
+                        // Check if required properties are present
+                        if (propertySchema.required && propertyValue === undefined) {
+                            return false;
+                        }
+
+                        // Validate properties recursively
+                        if (!validateObject(propertyValue, propertySchema)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            return false; // Invalid type
+        }
+
+        // fetchData();
+        // validateObject();
+
+        // fetch('league.json')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         // Validate the data against the JSON schema
+        //         const valid = validateDataAgainstSchema(data);
+
+        //         console.log("Valid" , valid);
+        //         if (!valid) {
+        //             console.error('Data does not match schema.');
+        //             return;
+        //         }
+
+        //         // If data is valid, populate the HTML table
+        //         const leagueData = data.FebruaryFixtures.concat(data.MarchFixtures); // Add more months if available
+        //         populateTable(leagueData);
+        //     })
+        //     .catch(error => console.error('Error fetching data:', error));
+
+
+
+        // Custom JSON schema validator function
+        // function validateDataAgainstSchema(data) {
+        //     // Helper function to validate an object against a schema
+
+        //     // Call the helper function to validate the data against the schema
+
+        // }
+
+
+        // Validate the data against the schema
+        // const isValid = validateDataAgainstSchema(data, schema);
+        // console.log('Data is valid:', isValid);
+
+
+        // function validateDataAgainstSchema(data) {
+        //     // Import Ajv library
+        //     // const Ajv = require('ajv');
+        //     const ajv = new Ajv(); // Create a new Ajv instance
+
+        //     // Load the JSON schema file (Leagueschema.json)
+        //     const schema = require('./Leagueschema.json'); // Adjust the file path as needed
+
+        //     // Validate the data against the schema
+        //     const valid = ajv.validate(schema, data);
+
+        //     if (!valid) {
+        //         console.error('Data does not match schema:', ajv.errors);
+        //     }
+
+        //     return valid;
+        // }
+
+        // Populate HTML table with league data
+        function populateTable(leagueData) {
+            const tableBody = document.getElementById('leagueData');
+            leagueData.forEach(fixture => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+        <td>${fixture.date}</td>
+        <td>${fixture.homeTeam}</td>
+        <td>${fixture.homeScore}</td>
+        <td>${fixture.awayTeam}</td>
+        <td>${fixture.awayScore}</td>
+        <td>${fixture.result}</td>
+      `;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

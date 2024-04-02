@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League Data</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>League Data</h2>
+
+    <table id="leagueTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Home Team</th>
+                <th>Home Score</th>
+                <th>Away Team</th>
+                <th>Away Score</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody id="leagueData">
+            <!-- League data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Read the JSON data from League.json file
+        fetch('league.json')
+            .then(response => response.json())
+            .then(data => {
+                // Validate the data against the JSON schema
+                const valid = validateDataAgainstSchema(data);
+                if (!valid) {
+                    console.error('Data does not match schema.');
+                    return;
+                }
+
+                // If data is valid, populate the HTML table
+                const leagueData = data.FebruaryFixtures.concat(data.MarchFixtures); // Add more months if available
+                populateTable(leagueData);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+
+        // Validate data against JSON schema
+        function validateDataAgainstSchema(data) {
+            // Import Ajv library
+            const Ajv = require('ajv');
+            const ajv = new Ajv(); // Create a new Ajv instance
+
+            // Load the JSON schema file (Leagueschema.json)
+            const schema = require('./Leagueschema.json'); // Adjust the file path as needed
+
+            // Validate the data against the schema
+            const valid = ajv.validate(schema, data);
+
+            if (!valid) {
+                console.error('Data does not match schema:', ajv.errors);
+            }
+
+            return valid;
+        }
+
+        // Populate HTML table with league data
+        function populateTable(leagueData) {
+            const tableBody = document.getElementById('leagueData');
+            leagueData.forEach(fixture => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+        <td>${fixture.date}</td>
+        <td>${fixture.homeTeam}</td>
+        <td>${fixture.homeScore}</td>
+        <td>${fixture.awayTeam}</td>
+        <td>${fixture.awayScore}</td>
+        <td>${fixture.result}</td>
+      `;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

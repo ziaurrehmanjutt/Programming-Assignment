@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>League Data</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+
+<h2>League Data</h2>
+
+<table id="leagueTable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Home Team</th>
+      <th>Home Score</th>
+      <th>Away Team</th>
+      <th>Away Score</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <tbody id="leagueData">
+    <!-- League data will be inserted here -->
+  </tbody>
+</table>
+
+<script>
+  // Function to fetch and display league data
+  function fetchAndDisplayData() {
+    fetch('League.json')
+      .then(response => response.json())
+      .then(data => {
+        const leagueData = data.FebruaryFixtures.concat(data.MarchFixtures); // Combine data from multiple months if necessary
+        populateTable(leagueData);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }
+
+  // Populate HTML table with league data
+  function populateTable(leagueData) {
+    const tableBody = document.getElementById('leagueData');
+    tableBody.innerHTML = ''; // Clear existing data
+    leagueData.forEach(fixture => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${fixture.date}</td>
+        <td>${fixture.homeTeam}</td>
+        <td>${fixture.homeScore}</td>
+        <td>${fixture.awayTeam}</td>
+        <td>${fixture.awayScore}</td>
+        <td>${fixture.result}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Fetch and display data initially
+  fetchAndDisplayData();
+
+  // Fetch and display data periodically every 5 seconds (adjust interval as needed)
+  setInterval(fetchAndDisplayData, 5000);
+</script>
+
+</body>
+</html>
