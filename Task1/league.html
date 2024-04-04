@@ -27,7 +27,7 @@
 <body>
 
     <h2>League Data</h2>
-
+    <a href="topscorers.html">Top Scores</a>
     <table id="leagueTable">
         <thead>
             <tr>
@@ -57,12 +57,15 @@
 
             loadData();
 
+            setInterval(() => {
+                loadData();
+            }, 5000);
 
         });
 
         async function loadData() {
-
-            const dataResponse = await fetch('league.json');
+            const timestamp = Date.now();
+            const dataResponse = await fetch('league.json?'+timestamp);
             const schemaResponse = await fetch('leagueschema.json');
 
             // Parse responses as JSON
@@ -192,6 +195,7 @@
         // Populate HTML table with league data
         function populateTable(leagueData) {
             const tableBody = document.getElementById('leagueData');
+            tableBody.innerHTML = ""
             leagueData.forEach(fixture => {
                 fixture.matches.forEach(element => {
 
