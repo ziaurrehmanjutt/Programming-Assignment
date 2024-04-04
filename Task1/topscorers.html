@@ -27,16 +27,21 @@
 <body>
 
     <h2> Top Scores</h2>
-    <a href="topscorers.html">League</a>
+    <a href="league.html">League</a>
     <table id="leagueTable">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Home Team</th>
-                <th>Home Score</th>
-                <th>Away Team</th>
-                <th>Away Score</th>
-                <th>Result</th>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Club</th>
+                <th>Goals</th>
+                <th>Assists</th>
+                <th>Played</th>
+                <th>Goals per 90</th>
+                <th>Mins per Goal</th>
+                <th>Total Shots</th>
+                <th>Goal Conversion</th>
+                <th>Shot Accuracy</th>
             </tr>
         </thead>
         <tbody id="leagueData">
@@ -65,22 +70,22 @@
 
         async function loadData() {
             const timestamp = Date.now();
-            const dataResponse = await fetch('league.json?'+timestamp);
+            const dataResponse = await fetch('league.json?' + timestamp);
             const schemaResponse = await fetch('leagueschema.json');
 
             // Parse responses as JSON
             const data = await dataResponse.json();
             const schema = await schemaResponse.json();
 
-            const valid = validateObject(data, schema);
+            //const valid = validateObject(data, schema);
 
-            if (!valid) {
-                console.error('Data does not match schema.');
-                return;
-            }
+            // if (!valid) {
+            //     console.error('Data does not match schema.');
+            //     return;
+            // }
 
             // If data is valid, populate the HTML table
-            const leagueData = data.scoresFixtures;// Add more months if available
+            const leagueData = data.topScorers;// Add more months if available
             populateTable(leagueData);
 
         }
@@ -137,81 +142,30 @@
             return false; // Invalid type
         }
 
-        // fetchData();
-        // validateObject();
-
-        // fetch('league.json')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         // Validate the data against the JSON schema
-        //         const valid = validateDataAgainstSchema(data);
-
-        //         console.log("Valid" , valid);
-        //         if (!valid) {
-        //             console.error('Data does not match schema.');
-        //             return;
-        //         }
-
-        //         // If data is valid, populate the HTML table
-        //         const leagueData = data.FebruaryFixtures.concat(data.MarchFixtures); // Add more months if available
-        //         populateTable(leagueData);
-        //     })
-        //     .catch(error => console.error('Error fetching data:', error));
-
-
-
-        // Custom JSON schema validator function
-        // function validateDataAgainstSchema(data) {
-        //     // Helper function to validate an object against a schema
-
-        //     // Call the helper function to validate the data against the schema
-
-        // }
-
-
-        // Validate the data against the schema
-        // const isValid = validateDataAgainstSchema(data, schema);
-        // console.log('Data is valid:', isValid);
-
-
-        // function validateDataAgainstSchema(data) {
-        //     // Import Ajv library
-        //     // const Ajv = require('ajv');
-        //     const ajv = new Ajv(); // Create a new Ajv instance
-
-        //     // Load the JSON schema file (Leagueschema.json)
-        //     const schema = require('./Leagueschema.json'); // Adjust the file path as needed
-
-        //     // Validate the data against the schema
-        //     const valid = ajv.validate(schema, data);
-
-        //     if (!valid) {
-        //         console.error('Data does not match schema:', ajv.errors);
-        //     }
-
-        //     return valid;
-        // }
-
-        // Populate HTML table with league data
         function populateTable(leagueData) {
             const tableBody = document.getElementById('leagueData');
             tableBody.innerHTML = ""
             leagueData.forEach(fixture => {
-                fixture.matches.forEach(element => {
 
 
-                    const row = document.createElement('tr');
-                            row.innerHTML = `
-                            <td>${fixture.date}</td>
-                            <td>${element.homeTeam}</td>
-                            <td>${element.homeScore}</td>
-                            <td>${element.awayTeam}</td>
-                            <td>${element.awayScore}</td>
-                            <td>${element.result}</td>
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                            <td>${fixture.Rank}</td>
+                            <td>${fixture.Name}</td>
+                            <td>${fixture.Club}</td>
+                            <td>${fixture.Goals}</td>
+                            <td>${fixture.Assists}</td>
+                            <td>${fixture.Played}</td>
+                            <td>${fixture['Goals per 90']}</td>
+                            <td>${fixture['Mins per Goal']}</td>
+                            <td>${fixture['Total Shots']}</td>
+                            <td>${fixture['Goal Conversion']}</td>
+                            <td>${fixture['Shot Accuracy']}</td>
                         `;
-                    tableBody.appendChild(row);
-                });
+                tableBody.appendChild(row);
             });
+
         }
     </script>
 

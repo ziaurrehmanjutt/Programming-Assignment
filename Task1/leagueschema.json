@@ -59,7 +59,45 @@
             "type": "array"
         },
         "topScorers": {
-            "type": "array"
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Rank": {
+                        "type": "number"
+                    },
+                    "Name": {
+                        "type": "string"
+                    },
+                    "Club": {
+                        "type": "string"
+                    },
+                    "Goals": {
+                        "type": "number"
+                    },
+                    "Assists": {
+                        "type": "number"
+                    },
+                    "Played": {
+                        "type": "number"
+                    },
+                    "Goals per 90": {
+                        "type": "number"
+                    },
+                    "Mins per Goal": {
+                        "type": "number"
+                    },
+                    "Total Shots": {
+                        "type": "number"
+                    },
+                    "Goal Conversion": {
+                        "type": "string"
+                    },
+                    "Shot Accuracy": {
+                        "type": "string"
+                    }
+                }
+            }
         }
     }
 }
