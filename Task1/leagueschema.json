@@ -3,71 +3,63 @@
     "title": "League Data Schema",
     "type": "object",
     "properties": {
-        "PremierLeague": {
-            "type": "object",
-            "properties": {
-                "scoresFixtures": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "date": {
-                                "type": "string",
-                                "format": "date",
-                                "pattern": "^\\d{2}-\\d{2}-\\d{4}$"
-                            },
-                            "matches": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "homeTeam": {
-                                            "type": "string"
-                                        },
-                                        "homeScore": {
-                                            "type": "integer",
-                                            "minimum": 0
-                                        },
-                                        "awayTeam": {
-                                            "type": "string"
-                                        },
-                                        "awayScore": {
-                                            "type": "integer",
-                                            "minimum": 0
-                                        },
-                                        "result": {
-                                            "type": "string",
-                                            "enum": [
-                                                "FT"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "homeTeam",
-                                        "homeScore",
-                                        "awayTeam",
-                                        "awayScore",
-                                        "result"
+        "scoresFixtures": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "pattern": "^\\d{2}-\\d{2}-\\d{4}$"
+                    },
+                    "matches": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "homeTeam": {
+                                    "type": "string"
+                                },
+                                "homeScore": {
+                                    "type": "number",
+                                    "minimum": 0
+                                },
+                                "awayTeam": {
+                                    "type": "string"
+                                },
+                                "awayScore": {
+                                    "type": "number",
+                                    "minimum": 0
+                                },
+                                "result": {
+                                    "type": "string",
+                                    "enum": [
+                                        "FT"
                                     ]
                                 }
-                            }
-                        },
-                        "required": [
-                            "date",
-                            "matches"
-                        ]
+                            },
+                            "required": [
+                                "homeTeam",
+                                "homeScore",
+                                "awayTeam",
+                                "awayScore",
+                                "result"
+                            ]
+                        }
                     }
                 },
-                "leagueTable": {
-                    "type": "array"
-                },
-                "topScorers": {
-                    "type": "array"
-                }
-            },
-            "required": [
-                "scoresFixtures"
-            ]
+                "required": [
+                    "date",
+                    "matches"
+                ]
+            }
+        },
+        "leagueTable": {
+            "type": "array"
+        },
+        "topScorers": {
+            "type": "array"
         }
     }
 }
