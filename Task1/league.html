@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>League Data</title>
-    <style>
+    <link rel="stylesheet" href="league.css" />
+    <!-- <style>
         table {
             border-collapse: collapse;
             width: 100%;
@@ -21,7 +22,8 @@
         th {
             background-color: #f2f2f2;
         }
-    </style>
+    </style> -->
+    <link  />
 </head>
 
 <body>
@@ -43,178 +45,8 @@
             <!-- League data will be inserted here -->
         </tbody>
     </table>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/ajv/dist/ajv.min.js"></script> -->
-    <script>
-        // Read the JSON data from League.json file
 
-
-
-        document.addEventListener('DOMContentLoaded', async function () {
-
-            console.log('Document is ready!');
-            console.log("Type test is", typeof 2);
-
-
-            loadData();
-
-            setInterval(() => {
-                loadData();
-            }, 5000);
-
-        });
-
-        async function loadData() {
-            const timestamp = Date.now();
-            const dataResponse = await fetch('league.json?'+timestamp);
-            const schemaResponse = await fetch('leagueschema.json');
-
-            // Parse responses as JSON
-            const data = await dataResponse.json();
-            const schema = await schemaResponse.json();
-
-            const valid = validateObject(data, schema);
-
-            if (!valid) {
-                console.error('Data does not match schema.');
-                return;
-            }
-
-            // If data is valid, populate the HTML table
-            const leagueData = data.scoresFixtures;// Add more months if available
-            populateTable(leagueData);
-
-        }
-
-        function validateObject(obj, sch) {
-            // Check if object is null or undefined
-            if (obj === null || obj === undefined) {
-                console.error("4", obj)
-                return false;
-            }
-
-            console.log(obj);
-            console.log(sch);
-            // Check if object is an array
-            if (sch.type === 'array' && Array.isArray(obj)) {
-                // Validate each item in the array recursively
-                for (const item of obj) {
-                    if (!validateObject(item, sch.items)) {
-                        console.error("3", sch)
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            // Check if object is a primitive type
-            if (typeof obj === sch.type) {
-                // If object is of type 'object', validate its properties recursively
-                if (sch.type === 'object') {
-                    for (const key in sch.properties) {
-                        const propertySchema = sch.properties[key];
-                        const propertyValue = obj[key];
-
-                        // console.log("Key", key)
-                        // console.log("PropScema", propertySchema)
-                        // console.log("val", propertyValue)
-
-                        // Check if required properties are present
-                        if (propertySchema.required && propertyValue === undefined) {
-                            console.error("1")
-                            return false;
-                        }
-
-                        // Validate properties recursively
-                        if (!validateObject(propertyValue, propertySchema)) {
-                            console.error("2", key)
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            }
-            console.error("5", sch, obj)
-            return false; // Invalid type
-        }
-
-        // fetchData();
-        // validateObject();
-
-        // fetch('league.json')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         // Validate the data against the JSON schema
-        //         const valid = validateDataAgainstSchema(data);
-
-        //         console.log("Valid" , valid);
-        //         if (!valid) {
-        //             console.error('Data does not match schema.');
-        //             return;
-        //         }
-
-        //         // If data is valid, populate the HTML table
-        //         const leagueData = data.FebruaryFixtures.concat(data.MarchFixtures); // Add more months if available
-        //         populateTable(leagueData);
-        //     })
-        //     .catch(error => console.error('Error fetching data:', error));
-
-
-
-        // Custom JSON schema validator function
-        // function validateDataAgainstSchema(data) {
-        //     // Helper function to validate an object against a schema
-
-        //     // Call the helper function to validate the data against the schema
-
-        // }
-
-
-        // Validate the data against the schema
-        // const isValid = validateDataAgainstSchema(data, schema);
-        // console.log('Data is valid:', isValid);
-
-
-        // function validateDataAgainstSchema(data) {
-        //     // Import Ajv library
-        //     // const Ajv = require('ajv');
-        //     const ajv = new Ajv(); // Create a new Ajv instance
-
-        //     // Load the JSON schema file (Leagueschema.json)
-        //     const schema = require('./Leagueschema.json'); // Adjust the file path as needed
-
-        //     // Validate the data against the schema
-        //     const valid = ajv.validate(schema, data);
-
-        //     if (!valid) {
-        //         console.error('Data does not match schema:', ajv.errors);
-        //     }
-
-        //     return valid;
-        // }
-
-        // Populate HTML table with league data
-        function populateTable(leagueData) {
-            const tableBody = document.getElementById('leagueData');
-            tableBody.innerHTML = ""
-            leagueData.forEach(fixture => {
-                fixture.matches.forEach(element => {
-
-
-                    const row = document.createElement('tr');
-                            row.innerHTML = `
-                            <td>${fixture.date}</td>
-                            <td>${element.homeTeam}</td>
-                            <td>${element.homeScore}</td>
-                            <td>${element.awayTeam}</td>
-                            <td>${element.awayScore}</td>
-                            <td>${element.result}</td>
-                        `;
-                    tableBody.appendChild(row);
-                });
-            });
-        }
-    </script>
-
+    <script src="league.js"></script>
 </body>
 
 </html>
